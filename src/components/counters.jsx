@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import Counters from "./components/counters";
-import NavBar from "./components/navBar";
+import Counter from "./counter";
 
-class App extends Component {
+class Counters extends Component {
   state = {
     counters: [
       { id: 1, value: 4 },
@@ -11,6 +10,7 @@ class App extends Component {
       { id: 4, value: 0 },
     ],
   };
+
   handleIncrement = (counter) => {
     const counters = [...this.state.counters];
     const index = counters.indexOf(counter);
@@ -18,6 +18,7 @@ class App extends Component {
     counters[index].value++;
     this.setState({ counters });
   };
+
   handleReset = () => {
     const counters = this.state.counters.map((c) => {
       c.value = 0;
@@ -25,26 +26,36 @@ class App extends Component {
     });
     this.setState({});
   };
+
   handleDelete = (counterId) => {
     const counters = this.state.counters.filter((c) => c.id !== counterId);
     this.setState({ counters });
   };
 
   render() {
+    const { onReset, counters, onDelete, onIncrement } = this.props;
+
     return (
-      <React.Fragment>
-        <NavBar totalCounters={this.state.counters.filter(c => c.value >0).length}/>
-        <main className="container">
-          <Counters
-            counters={this.state.counters}
-            onReset={this.handleReset}
-            onDelete={this.handleDelete}
-            onIncrement={this.handleIncrement}
-          />
-        </main>
-      </React.Fragment>
+      <div>
+        <button
+          className="btn btn-primary btn-sm m-2"
+          onClick={onReset}
+        >
+          Reset
+        </button>
+        {counters.map((counter) => (
+          <Counter
+            key={counter.id}
+            onDelete={onDelete}
+            onIncrement={onIncrement}
+            counter={counter}
+          >
+            <h4>Counter #{counter.id}</h4>
+          </Counter>
+        ))}
+      </div>
     );
   }
 }
 
-export default App;
+export default Counters;
